@@ -1,3 +1,6 @@
+![USP ESALQ](URL_da_Imagem)
+
+
 #### Repositório do TCC em Data Science and Analytics a ser entregue como parte das disciplinas do MBA da USP ESALQ ####
 
 
@@ -21,10 +24,10 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 
 ##### Objetivos Específicos #####
 
-Integrar e preparar uma base de dados sobre mortalidade por DCNTs com estrutura multinível;
-Estimar modelos de regressão logística multinível com variáveis em níveis individual e municipal;
-Avaliar a influência de desigualdades de PIB e IDH nas ocorrências;
-Comparar os resultados com um modelo logístico tradicional.
+- Integrar e preparar uma base de dados sobre mortalidade por DCNTs com estrutura multinível;
+- Estimar modelos de regressão logística multinível com variáveis em níveis individual e municipal;
+- Avaliar a influência de desigualdades de PIB e IDH nas ocorrências;
+- Comparar os resultados com um modelo logístico tradicional.
 
 #### Bases de Dados ####
 
@@ -59,9 +62,9 @@ Comparar os resultados com um modelo logístico tradicional.
 
 #### Resultados Esperados ####
 
-Identificação de fatores de segundo nas principais determinantes da mortalidade por doenças crônicas;
-Efeitos contextuais mensurados e visualizados geograficamente;
-Comparação robusta entre modelos simples e multinível;
+- Identificação de fatores de segundo nas principais determinantes da mortalidade por doenças crônicas;
+- Efeitos contextuais mensurados e visualizados geograficamente;
+- Comparação robusta entre modelos simples e multinível;
 
 #### Hipótese #####
 - H0 - As ocorrências de mortes por DCNT no estado de São Paulo *não* apresentam variação aleatória significativa entre os municípios 
