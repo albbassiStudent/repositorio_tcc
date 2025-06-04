@@ -181,7 +181,10 @@ print_versions(libs_usadas)
 url = "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SIM/DO24OPEN.csv"
 
 #SEADE
-url2 = "https://repositorio.seade.gov.br/dataset/1bd90672-72a8-47cb-a34d-ab9eb703735d/resource/c2eb14df-60e0-44d6-9e7a-9fcdc339c4ad/download/pib-municipios-2021_site.xlsx"
+#url2 = "https://repositorio.seade.gov.br/dataset/1bd90672-72a8-47cb-a34d-ab9eb703735d/resource/c2eb14df-60e0-44d6-9e7a-9fcdc339c4ad/download/pib-municipios-2021_site.xlsx"
+
+# URL Alternativa quando site da SEADE estiver fora do ar
+url2 = "https://raw.githubusercontent.com/albbassiStudent/repositorio_tcc/refs/heads/main/pib-municipios-2021-seade.csv"
 
 #Código Municípios IBGE
 url3 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/cod_municipios_ibge.csv"
@@ -268,8 +271,12 @@ with tempfile.TemporaryDirectory() as temp_dir:
         caminho2 = filepath
 
         # Ler o XLSX
-        df_dados_seade_2021 = pd.read_excel(caminho2, usecols='A:E,G:H,I', skiprows=12, header=None, names=['municipios', 'agropecuaria', 'industria', 'administracao_publica', 'servicos', 'impostos', 'pib','pib_per_capita'])
-        df_dados_seade_2021.drop(df_dados_seade_2021.tail(3).index, inplace=True)
+        #df_dados_seade_2021 = pd.read_excel(caminho2, usecols='A:E,G:H,I', skiprows=12, header=None, names=['municipios', 'agropecuaria', 'industria', 'administracao_publica', 'servicos', 'impostos', 'pib','pib_per_capita'])
+        #df_dados_seade_2021.drop(df_dados_seade_2021.tail(3).index, inplace=True)
+        
+        # Leitura alternativo quando o site está fora do ar
+        df_dados_seade_2021 = pd.read_csv(caminho2, sep=';', encoding='utf-8')
+        
     else:
         print(f"Erro ao baixar arquivo: código {response2.status_code}")
         
@@ -311,8 +318,9 @@ with tempfile.TemporaryDirectory() as temp_dir:
         print(f"\nDownload completo! Arquivo salvo em: {filepath}")
         caminho3 = filepath
 
-        # Ler o XLS
+        # Ler o CSV
         df_dados_cod_municipio_ibge = pd.read_csv(caminho3, sep=';', encoding='utf-8')
+        df_dados_cod_municipio_ibge['Código Município Completo'] = df_dados_cod_municipio_ibge['Código Município Completo'].astype(str).str[:-1].astype('category')
     else:
         print(f"Erro ao baixar arquivo: código {response3.status_code}")
 
@@ -402,8 +410,10 @@ df_dados_sim_2024_filtrado = df_dados_sim_2024[['IDADE', 'SEXO', 'RACACOR', 'COD
     'IDADE': 'int',
     'SEXO': 'category',
     'RACACOR': 'category',
-    'CODMUNRES':'category',
+    'CODMUNRES':'str',
     'CAUSABAS':'category'})
+
+
 
 # pega o primeiro algaritimo da idade para classificar o tipo de contagem (hora, mes, ano, +100 anos)
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['IDADE'].fillna('').astype(str).str[0]
@@ -426,17 +436,21 @@ df_dados_sim_2024_filtrado.rename(columns={
 # Converte o tipo de idade para categoria 
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['tipo_idade'].astype('category')
 
-#df_dados_sim_2024_filtrado.dtypes
-
-#df_dados_sim_2024_filtrado.describe()
-
-#df_dados_sim_2024_filtrado.groupby('causa_basica').size().sort_values(ascending=False)
-
 # Filtra apenas as ocorrência de óbito registradas em municípios de São Paulo 
 df_dados_sim_2024_filtrado_sp = df_dados_sim_2024_filtrado[df_dados_sim_2024_filtrado['cod_mun_res'].astype(str).str.startswith('35', na=False)]
 
 # corrige dataframe para idades acima de 100 anos
 df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['tipo_idade' ] == '5') & (df_dados_sim_2024_filtrado_sp['idade_corrigida' ] < 100), 'idade_corrigida'] += 100
+
+# Pega todos os registros com o código de municipio 350000 (que não existe para o ibge) para o código 350001 (Município de São Paulo) 
+df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['cod_mun_res' ] == '350000'), 'cod_mun_res'] = '355030'
+
+# Ajusta o nome do Dataframe
+df_dados_sim_2024_sp_final = df_dados_sim_2024_filtrado_sp
+
+# Troca o nome do código de municipio par cod_ibge conforme a chave os outros dataframes
+df_dados_sim_2024_sp_final.rename(columns={
+    'cod_mun_res': 'cod_ibge'}, inplace = True)
 
 #%%
 ###########################################################################
@@ -581,6 +595,10 @@ df_dados_seade_sp_ibge_final['pib'] = (df_dados_seade_sp_ibge_final['pib'] - df_
 df_dados_seade_sp_ibge_final['pib_per_capita'] = (df_dados_seade_sp_ibge_final['pib_per_capita'] - df_dados_seade_sp_ibge_final['pib_per_capita'].mean()) / df_dados_seade_sp_ibge_final['pib_per_capita'].std()
 
 
+##############################################################################
+#                  Término tratamento SEADE                                  #
+##############################################################################
+
 
 
 #%%
@@ -591,4 +609,77 @@ df_dados_seade_sp_ibge_final['pib_per_capita'] = (df_dados_seade_sp_ibge_final['
 #                  Inicio tratamento PNUD                                    #
 ##############################################################################
 '''
+
+#df_dados_pnud_2010.info()
+
+# Filtra apenas dados do estado de São Paulo
+df_dados_pnud_2010_sp = df_dados_pnud_2010[df_dados_pnud_2010['Estado']=='SP']
+
+# Cria uma coluna com o nome do municipio em lower sem acentos
+df_dados_pnud_2010_sp['nome_limpo_municipio'] = df_dados_pnud_2010_sp['Município'].apply(limpar_texto)
+
+# Acrescento o código do Municipio
+df_dados_pnud_2010_ibge_sp = pd.merge(df_dados_cod_municipio_ibge_sp, df_dados_pnud_2010_sp, on="nome_limpo_municipio")
+
+df_dados_pnud_2010_ibge_sp_final = df_dados_pnud_2010_ibge_sp[['Código Município Completo', 'IDHM 2010', 
+                                   'IDHM Renda 2010', 'IDHM Longevidade 2010', 'IDHM Educação 2010']]
+
+df_dados_pnud_2010_ibge_sp_final.rename(columns= {'Código Município Completo':'cod_ibge', 'IDHM 2010':'idhm_2010', 
+                                   'IDHM Renda 2010':'idhm_renda_2010', 'IDHM Longevidade 2010':'idhm_longevidade_2010',
+                                   'IDHM Educação 2010': 'idhm_educacao_2010' }, inplace=True)
+
+##############################################################################
+#                  Término tratamento PNUD                                   #
+##############################################################################
+
+
+#%%
+
+
+'''
+##############################################################################
+#                  Merge Dataframes SIM, SEADE e PNUD                        #
+##############################################################################
+'''
+
+
+# Faz a tipagem das colunas chave para string
+df_dados_seade_sp_ibge_final['cod_ibge'] = df_dados_seade_sp_ibge_final['cod_ibge'].astype('str')
+df_dados_pnud_2010_ibge_sp_final['cod_ibge'] = df_dados_pnud_2010_ibge_sp_final['cod_ibge'].astype('str')
+df_dados_sim_2024_sp_final['cod_ibge'] = df_dados_sim_2024_sp_final['cod_ibge'].astype('str')
+
+# Registro que podem ter ficado ausentes entre SEADE e PNUD
+set1 = set(df_dados_seade_sp_ibge_final['cod_ibge'])
+set2 = set(df_dados_pnud_2010_ibge_sp_final['cod_ibge'])
+
+so_em_seade = set1 - set2
+so_em_pnud = set2 - set1
+
+'''
+Estes Municípios não possuem registros de IDH no PNUD 2010
+
+cod_ibge municipio
+350660	Biritiba Mirim
+351500	Embu das Artes
+351610	Florínea
+355000	São Luiz do Paraitinga
+
+'''
+
+# Merge dos três dataframes para dar início à análise
+#df_dados_sim_seade_pnud_ibge = df_dados_sim_2024_sp_final.merge(df_dados_seade_sp_ibge_final, on= 'cod_ibge').merge(df_dados_pnud_2010_ibge_sp_final, on = 'cod_ibge')
+
+# converte código ibge para category
+#df_dados_sim_seade_pnud_ibge = df_dados_sim_seade_pnud_ibge['cod_ibge'].astype('category')
+
+#df_dados_sim_seade_pnud_ibge.info()
+
+# merge feito em duas etapas 
+df_dados_seade_pnud_ibge = pd.merge(df_dados_seade_sp_ibge_final, df_dados_pnud_2010_ibge_sp_final, on='cod_ibge', how='left')
+df_dados_sim_seade_pnud_ibge = pd.merge(df_dados_sim_2024_sp_final, df_dados_seade_pnud_ibge, on= 'cod_ibge', how='left')
+
+#%%
+
+
+
 
