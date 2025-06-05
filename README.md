@@ -34,9 +34,9 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 
 #### Bases de Dados ####
 
-- SIM dados 2024 
-- PNUD dados de 2010
-- SEADE dados de 2024
+[Sistema de Informações sobre Mortalidade](http://sim.saude.gov.br/default.asp) - 2024 <br>
+[Programa das Nações Unidas para o Desenvolvimento](https://www.undp.org/pt/brazil/pnud-no-brasil) - 2010 <br>
+[Sistema Estadual de Análise de Dados -SP](https://www.seade.gov.br/institucional/fundacao-seade) - 2021 <br>
 
 ### Variáveis ####
 
@@ -50,17 +50,17 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 
 ##### Segundo Nível #####
 
-- Total agropecuária,                          
-- Total indústria,                             
-- Total Administração pública,                  
-- Total Serviços,                              
-- Total impostos,                              
-- PIB Total,                                    
-- PIB Per capita,  
-- IDHM 2010,
-- IDHM Renda 2010,
-- IDHM Longevidade 2010,
-- IDHM Educação 2010
+- PIB 2021 Total agropecuária,                          
+- PIB 2021 Total indústria,                             
+- PIB 2021 Total Administração pública,                  
+- PIB 2021 Total Serviços,                              
+- PIB 2021 Total impostos,                              
+- PIB 2021 Total,                                    
+- PIB 2021 Per capita,  
+- PNUD 2010 IDHM,
+- PNUD 2010 IDHM Renda,
+- PNUD 2010 IDHM Longevidade,
+- PNUD 2010 IDHM Educação
 
 
 #### Resultados Esperados ####
