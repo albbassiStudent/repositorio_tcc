@@ -9,7 +9,7 @@
 
 #### Título ######
 
-- Fatores Individuais e Contextuais Associados à Mortalidade por Doenças Crônicas em Adultos no Brasil: Uma Abordagem com Regressão Logística Multinível"
+- Fatores Individuais e Contextuais Associados à Mortalidade por Doenças Crônicas em Adultos no Brasil: Uma Abordagem com Regressão Logística Multinomial Multinível"
 
 #### Área de Concentração ####
 
@@ -47,22 +47,16 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 - Raça/Cor,
 - Idade,
 - Cód. Mun. Res,
-- Causa Básica
+- Causa Básica - > +- por assunto / pelo menos 5 (infarto, pulmonar, trato urinario e neoplasias e outros) - Em uma ocorrêcia de morte a chance de ser uma das causas
 
 ##### Segundo Nível #####
 
-- PIB 2021 Total agropecuária,                          
-- PIB 2021 Total indústria,                             
-- PIB 2021 Total Administração pública,                  
-- PIB 2021 Total Serviços,                              
-- PIB 2021 Total impostos,                              
-- PIB 2021 Total,                                    
-- PIB 2021 Per capita,  
-- PNUD 2010 IDHM,
-- PNUD 2010 IDHM Renda,
-- PNUD 2010 IDHM Longevidade,
-- PNUD 2010 IDHM Educação
+*- PNUD 2010 IDHM,
+*- PNUD 2010 IDHM Renda,
+*- PNUD 2010 IDHM Longevidade,
+*- PNUD 2010 IDHM Educação
 
+Procurar variaveis de saude a nivel de municipio
 
 #### Resultados Esperados ####
 
