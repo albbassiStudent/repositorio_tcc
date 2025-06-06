@@ -184,13 +184,13 @@ url = "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/SIM/DO24OPEN.csv"
 #url2 = "https://repositorio.seade.gov.br/dataset/1bd90672-72a8-47cb-a34d-ab9eb703735d/resource/c2eb14df-60e0-44d6-9e7a-9fcdc339c4ad/download/pib-municipios-2021_site.xlsx"
 
 # URL Alternativa quando site da SEADE estiver fora do ar
-url2 = "https://raw.githubusercontent.com/albbassiStudent/repositorio_tcc/refs/heads/main/pib-municipios-2021-seade.csv"
+url2 = "https://raw.githubusercontent.com/albbassiStudent/repositorio_tcc/refs/heads/main/fontes_dados/pib-municipios-2021-seade.csv"
 
 #Código Municípios IBGE
-url3 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/cod_municipios_ibge.csv"
+url3 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/cod_municipios_ibge.csv"
 
 #PNUD IDH
-url4 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/idh_municipios_2010_atlas_desenvolvimento_humano.csv" 
+url4 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/idh_municipios_2010_atlas_desenvolvimento_humano.csv" 
 
 
 #%%    
