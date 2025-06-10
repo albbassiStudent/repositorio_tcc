@@ -37,8 +37,8 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 [Sistema de Informações sobre Mortalidade](http://sim.saude.gov.br/default.asp) - 2024 <br>
 [Programa das Nações Unidas para o Desenvolvimento](https://www.undp.org/pt/brazil/pnud-no-brasil) - 2010 <br>
 [Sistema Estadual de Análise de Dados -SP](https://www.seade.gov.br/institucional/fundacao-seade) - 2021 <br>
-[Classificação Internacional de Doenças](http://www2.datasus.gov.br/cid10/V2008/descrcsv.htm) - DATASUS <br>.
-[Portal Transparência](https://portaldatransparencia.gov.br/)- consulta Municipios São paulo 2024
+[Classificação Internacional de Doenças](http://www2.datasus.gov.br/cid10/V2008/descrcsv.htm) - DATASUS <br>
+[Portal Transparência](https://portaldatransparencia.gov.br/) - Consulta Recursos transferidos Saúde Municípios São Paulo 2024
 
 ### Variáveis ####
 
