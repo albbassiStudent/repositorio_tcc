@@ -38,7 +38,7 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 [Programa das Nações Unidas para o Desenvolvimento](https://www.undp.org/pt/brazil/pnud-no-brasil) - 2010 <br>
 [Sistema Estadual de Análise de Dados -SP](https://www.seade.gov.br/institucional/fundacao-seade) - 2021 <br>
 [Classificação Internacional de Doenças](http://www2.datasus.gov.br/cid10/V2008/descrcsv.htm) - DATASUS
-[Portal Transparência] (https://portaldatransparencia.gov.br/transferencias/consulta?paginacaoSimples=true&tamanhoPagina=&offset=&direcaoOrdenacao=asc&de=01%2F01%2F2024&ate=31%2F12%2F2024&uf=SP&funcao=10&colunasSelecionadas=linkDetalhamento%2Cuf%2Cmunicipio%2Ctipo%2CtipoFavorecido%2Cacao%2ClinguagemCidada%2CgrupoDespesa%2CelementoDespesa%2CmodalidadeDespesa%2Cvalor&ordenarPor=mesAno&direcao=desc) - Apenas dados SPO
+[Portal Transparência](https://portaldatransparencia.gov.br/)- consulta Municipios São paulo 2024
 
 ### Variáveis ####
 
