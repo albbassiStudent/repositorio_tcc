@@ -52,13 +52,13 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 
 ##### Segundo Nível #####
 
-*- PNUD 2010 IDHM, <br>
-*- PNUD 2010 IDHM Renda, <br>
-*- PNUD 2010 IDHM Longevidade, <br>
-*- PNUD 2010 IDHM Educação <br>
-*- Indice de GINI 2010 <br>
-*- Nº de Leitos 2024 <br>
-*- Transferências da União 2024  
+- PNUD 2010 IDHM, <br>
+- PNUD 2010 IDHM Renda, <br>
+- PNUD 2010 IDHM Longevidade, <br>
+- PNUD 2010 IDHM Educação <br>
+- Indice de GINI 2010 <br>
+- Nº de Leitos 2024 <br>
+- Transferências da União 2024  
 
 
 Procurar variaveis de saude a nivel de municipio
