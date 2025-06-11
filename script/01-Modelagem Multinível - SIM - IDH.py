@@ -192,6 +192,18 @@ url3 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/f
 #PNUD IDH
 url4 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/idh_municipios_2010_atlas_desenvolvimento_humano.csv" 
 
+#Indice de GINI Municipios
+url5 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/indice_de_gini_sp_2010.csv"
+
+#Leitos São Paulo
+url6 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/leitos_sp_2024.csv"
+
+#Tranferencias União Atenção Básica
+url7 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/transferencia_uniao_saude_sumarizado_sp_2024.csv"
+
+# UBS São Paulo
+url8 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/unidades_basicas_saude_sp_2024.csv"
+
 
 #%%    
 
@@ -365,7 +377,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
         # Lê do CSV e guarda os dados em um Dataframe
         df_dados_pnud_2010 = pd.read_csv(caminho4, sep=';', encoding='utf-8')
     else:
-        print(f"Erro ao baixar arquivo: código {response.status_code}")
+        print(f"Erro ao baixar arquivo: código {response4.status_code}")
     
 #################################################################
 #               FIM EXTRAÇÃO DADOS IDH PNUD                     #
@@ -399,6 +411,182 @@ with tempfile.TemporaryDirectory() as temp_dir:
 
 
 #%%
+
+#################################################################
+#               INICIO EXTRAÇÃO DADOS GINI                      #
+#################################################################
+
+#GINI São Paulo
+#Criação do diretório temporário para guarda dos arquivos baixados
+with tempfile.TemporaryDirectory() as temp_dir:
+    filename5 = "dados_gini_2010.csv"
+    filepath = os.path.join(temp_dir, filename5)
+    response5 = requests.get(url5, stream=True)
+
+    # Download da base de dados GINI   
+    if response5.status_code == 200:
+        # Tamanho total do arquivo em bytes
+        total = int(response.headers.get('content-length', 0))
+        chunk_size = 1  # 1024 KB por iteração
+
+        # Cria uma barra de progresso
+        with open(filepath, 'wb') as f, tqdm(
+            desc=filename5,
+            total=total,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1
+        ) as bar:
+            for chunk in response5.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    bar.update(len(chunk))
+
+        print(f"\nDownload completo! Arquivo salvo em: {filepath}")
+        caminho5= filepath
+        # Lê do CSV e guarda os dados em um Dataframe
+        df_dados_gini_2010 = pd.read_csv(caminho5, sep=';', encoding='utf-8')
+    else:
+        print(f"Erro ao baixar arquivo: código {response5.status_code}")
+
+
+#################################################################
+#               FIM EXTRAÇÃO DADOS GINI                         #
+#################################################################
+
+#%%
+
+#################################################################
+#               INICIO EXTRAÇÃO DADOS Leitos                    #
+#################################################################
+
+#Leitos São Paulo
+#Criação do diretório temporário para guarda dos arquivos baixados
+with tempfile.TemporaryDirectory() as temp_dir:
+    filename6 = "dados_leitos_2024.csv"
+    filepath = os.path.join(temp_dir, filename6)
+    response6 = requests.get(url6, stream=True)
+
+    # Download da base de dados leitos São Paulo   
+    if response6.status_code == 200:
+        # Tamanho total do arquivo em bytes
+        total = int(response.headers.get('content-length', 0))
+        chunk_size = 1  # 1024 KB por iteração
+
+        # Cria uma barra de progresso
+        with open(filepath, 'wb') as f, tqdm(
+            desc=filename6,
+            total=total,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1
+        ) as bar:
+            for chunk in response6.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    bar.update(len(chunk))
+
+        print(f"\nDownload completo! Arquivo salvo em: {filepath}")
+        caminho6= filepath
+        # Lê do CSV e guarda os dados em um Dataframe
+        df_dados_leitos_2024 = pd.read_csv(caminho6, sep=';', encoding='utf-8')
+    else:
+        print(f"Erro ao baixar arquivo: código {response6.status_code}")
+
+
+#################################################################
+#               FIM EXTRAÇÃO DADOS Leitos                       #
+#################################################################
+
+#%%
+#################################################################
+#               INICIO EXTRAÇÃO DADOS Transferências União      #
+#################################################################
+
+#Tranferência recursos União Saúde Básica para São Paulo
+#Criação do diretório temporário para guarda dos arquivos baixados
+with tempfile.TemporaryDirectory() as temp_dir:
+    filename7 = "dados_transferencia_recursos_2024.csv"
+    filepath = os.path.join(temp_dir, filename7)
+    response7 = requests.get(url7, stream=True)
+
+    # Download da base de dados Transferências União Saúde Básica   
+    if response7.status_code == 200:
+        # Tamanho total do arquivo em bytes
+        total = int(response.headers.get('content-length', 0))
+        chunk_size = 1  # 1024 KB por iteração
+
+        # Cria uma barra de progresso
+        with open(filepath, 'wb') as f, tqdm(
+            desc=filename7,
+            total=total,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1
+        ) as bar:
+            for chunk in response7.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    bar.update(len(chunk))
+
+        print(f"\nDownload completo! Arquivo salvo em: {filepath}")
+        caminho7= filepath
+        # Lê do CSV e guarda os dados em um Dataframe
+        df_dados_transferencia_recursos_2024 = pd.read_csv(caminho7, sep=';', encoding='utf-8')
+    else:
+        print(f"Erro ao baixar arquivo: código {response7.status_code}")
+
+
+#################################################################
+#               FIM EXTRAÇÃO DADOS Transferências União         #
+#################################################################
+
+#%%
+
+#################################################################
+#               INICIO EXTRAÇÃO DADOS UBS São Paulo             #
+#################################################################
+
+#Total de Unidades Básicas em São Paulo
+#Criação do diretório temporário para guarda dos arquivos baixados
+with tempfile.TemporaryDirectory() as temp_dir:
+    filename8 = "dados_ubs_sp_2024.csv"
+    filepath = os.path.join(temp_dir, filename7)
+    response8 = requests.get(url8, stream=True)
+
+    # Download da base de dados UBS São Paulo   
+    if response8.status_code == 200:
+        # Tamanho total do arquivo em bytes
+        total = int(response.headers.get('content-length', 0))
+        chunk_size = 1  # 1024 KB por iteração
+
+        # Cria uma barra de progresso
+        with open(filepath, 'wb') as f, tqdm(
+            desc=filename8,
+            total=total,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1
+        ) as bar:
+            for chunk in response7.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    bar.update(len(chunk))
+
+        print(f"\nDownload completo! Arquivo salvo em: {filepath}")
+        caminho8= filepath
+        # Lê do CSV e guarda os dados em um Dataframe
+        df_dados_ubs_sp_2024 = pd.read_csv(caminho8, sep=';', encoding='utf-8')
+    else:
+        print(f"Erro ao baixar arquivo: código {response8.status_code}")
+
+
+#################################################################
+#               FIM EXTRAÇÃO DADOS UBS São Paulo                #
+#################################################################
+
+
+
 '''
 ############################################################################
 #                     Ajustes Dataframe SIM DATASUS                        #
