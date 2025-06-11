@@ -39,7 +39,8 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 [Sistema Estadual de Análise de Dados -SP](https://www.seade.gov.br/institucional/fundacao-seade) - 2021 <br>
 [Classificação Internacional de Doenças](http://www2.datasus.gov.br/cid10/V2008/descrcsv.htm) - DATASUS <br>
 [Portal Transparência](https://portaldatransparencia.gov.br/) - Consulta Recursos transferidos Saúde Municípios São Paulo 2024 <br>
-[Estatisticas IBGE](https://www.ibge.gov.br/estatisticas/todos-os-produtos-estatisticas.html)
+[Estatisticas IBGE](https://www.ibge.gov.br/estatisticas/todos-os-produtos-estatisticas.html) <br>
+[Cadastro Nacional de Estabelecimentos de Saúde](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CNES/cnes_estabelecimentos.zip) -  Open DATASUS (Arquivo Zip)
 
 ### Variáveis ####
 
