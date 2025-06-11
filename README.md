@@ -48,7 +48,7 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 - Raça/Cor,
 - Idade,
 - Cód. Mun. Res,
-- Causa Básica - > +- por assunto / pelo menos 5 (infarto, pulmonar, trato urinario e neoplasias e outros) - Em uma ocorrêcia de morte a chance de ser uma das causas
+- Causa Básica
 
 ##### Segundo Nível #####
 
