@@ -41,7 +41,8 @@ Investigar os determinantes individuais e contextuais da mortalidade por doença
 [Portal Transparência](https://portaldatransparencia.gov.br/) - Consulta Recursos transferidos Saúde Municípios São Paulo 2024 <br>
 [Estatisticas IBGE](https://www.ibge.gov.br/estatisticas/todos-os-produtos-estatisticas.html) <br>
 [Cadastro Nacional de Estabelecimentos de Saúde](https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CNES/cnes_estabelecimentos.zip) -  Open DATASUS (Arquivo Zip) <br>
-[API Dados Abertos DATASUS](https://apidadosabertos.saude.gov.br/v1/#)
+[API Dados Abertos DATASUS](https://apidadosabertos.saude.gov.br/v1/#) <br>
+[População Municipios IBGE](https://www.ibge.gov.br/estatisticas/sociais/populacao/9103-estimativas-de-populacao.html) - 2024
 
 ### Variáveis ####
 
