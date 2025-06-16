@@ -11,7 +11,7 @@
     Logística Multinível 
 
 """
-#%%
+#%% Instalaçãodos pacotes
 
 '''
 ########################################################################
@@ -32,7 +32,7 @@
 !pip install chardet
 !pip install xlrd
 
-#%%
+#%% Carga das Bibliotecas
 '''
 ######################################################################### 
 #                   Pacotes Utilizadas                                  #
@@ -88,7 +88,10 @@ import unicodedata
 # Utilizar regular expression com as colunas do dataaframe
 import re
 
-#%%
+# Para leitura de arquivos ZIP
+import zipfile
+
+#%% Resumo das colunas para os niveis
 '''
 ##############################################################################
 ##############################################################################
@@ -110,22 +113,19 @@ import re
  Código Município Residência
  CID-10 (grupo de causa)
 
-
 ##### Nível 2 – **Município**
- Agropecuária
- Indústria
- Serviços Administração Pública 
- Serviços (exceto Administração Pública)
- Impostos
  Renda per capita
  IDH
  IDHM
  IDHM Renda 2010
- IDHM Longevidade 2010
- IDHM Educação 2010
+.Pib
+.Pib Per capita
+.Gini
+.Transferencias Programas de saúde Governo Federal
+.Número de Leitos
 
 '''
-#%%
+#%% Impressão bibliotecas utilizados e suas versões Python e R
 
 '''
 ########################################################################
@@ -155,7 +155,7 @@ libs_usadas = ['numpy', 'pandas', 'matplotlib', 'scipy', 'sklearn', 'seaborn', '
                'statsmodels','statstests','pymer4', 'watermark']
 print_versions(libs_usadas)
 
-#%%
+#%% Impressão bibliotecas utilizados e suas versões python e SO
 '''
 #####################################################################################################
 # Imprime a versão das bibliotecas utilizadas apenas do PYTHON e informações do sistema operacional #
@@ -171,7 +171,7 @@ print_versions(libs_usadas)
 %watermark --iversions   
 
  
-#%%
+#%% Criação Variáveis armazenamento urls
 '''
 #############################################################################
 #    Criação de variáveis que armazenaram as urls de download dos arquivos  #
@@ -204,8 +204,11 @@ url7 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/f
 # UBS São Paulo
 url8 = "https://github.com/albbassiStudent/repositorio_tcc/raw/refs/heads/main/fontes_dados/unidades_basicas_saude_sp_2024.csv"
 
+#CNES Estabelecimentos
+url9= "https://s3.sa-east-1.amazonaws.com/ckan.saude.gov.br/CNES/cnes_estabelecimentos.zip"
 
-#%%    
+
+#%% Coleta Dados Mortalidade Datasus 2024
 
 # Download primeira base de dados SIM DATASUS    
 #################################################################
@@ -248,7 +251,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS SIM DATASUS                  #
 #################################################################   
 
-#%%    
+#%% Coleta Dados SEADE PIB São paulo
 
 #################################################################
 #               INICIO EXTRAÇÃO DADOS SEADE                     #
@@ -298,7 +301,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #################################################################
 
 
-#%%    
+#%% Coleta Municipios IBGE
 
 #################################################################
 #              INICIO EXTRAÇÃO DADOS CODIGO MUNICIPIOS IBGE     #
@@ -341,7 +344,8 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS IBGE                         #
 #################################################################
 
-#%%
+#%% Coleta IDH Atlas Brasil
+
 #################################################################
 #               INICIO EXTRAÇÃO DADOS IDH PNUD                  #
 #################################################################
@@ -383,7 +387,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS IDH PNUD                     #
 #################################################################
 
-#%%
+#%% DESATIVADO Outra forma extração PNUD
 ################################################################
 #       Extração dados PNUD sem a barra de progresso           #
 ################################################################
@@ -410,7 +414,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #         print(f"Erro ao baixar arquivo: código {response4.status_code}")  # Corrigido: response -> response4
 
 
-#%%
+#%% Coleta Dados GINI
 
 #################################################################
 #               INICIO EXTRAÇÃO DADOS GINI                      #
@@ -454,7 +458,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS GINI                         #
 #################################################################
 
-#%%
+#%% Coleta Dados Leitos
 
 #################################################################
 #               INICIO EXTRAÇÃO DADOS Leitos                    #
@@ -498,7 +502,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS Leitos                       #
 #################################################################
 
-#%%
+#%% Coleta Dados Transferências da União
 #################################################################
 #               INICIO EXTRAÇÃO DADOS Transferências União      #
 #################################################################
@@ -541,7 +545,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS Transferências União         #
 #################################################################
 
-#%%
+#%% Coleta Dados UBS
 
 #################################################################
 #               INICIO EXTRAÇÃO DADOS UBS São Paulo             #
@@ -558,7 +562,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
     if response8.status_code == 200:
         # Tamanho total do arquivo em bytes
         total = int(response.headers.get('content-length', 0))
-        chunk_size = 1  # 1024 KB por iteração
+        chunk_size =1  # 1024 KB por iteração
 
         # Cria uma barra de progresso
         with open(filepath, 'wb') as f, tqdm(
@@ -568,7 +572,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
             unit_scale=True,
             unit_divisor=1
         ) as bar:
-            for chunk in response7.iter_content(chunk_size=chunk_size):
+            for chunk in response8.iter_content(chunk_size=chunk_size):
                 if chunk:
                     f.write(chunk)
                     bar.update(len(chunk))
@@ -585,6 +589,57 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #               FIM EXTRAÇÃO DADOS UBS São Paulo                #
 #################################################################
 
+#%%
+
+########################################################################################
+#                        Inicio EXtração Dados CNES Estabelecimentos                   #
+########################################################################################
+
+# CNES Estabelecimentos
+with tempfile.TemporaryDirectory() as temp_dir:
+    filename =  "dados_cnes_2024.zip"
+    filepath = os.path.join(temp_dir, filename)
+    response9 = requests.get(url9, stream=True)
+            
+    if response9.status_code == 200:
+        # Tamanho total do arquivo em bytes
+        total = int(response9.headers.get('content-length', 0))
+        chunk_size = 1024  # 1 KB por iteração
+
+        # Cria uma barra de progresso
+        with open(filepath, 'wb') as f, tqdm(
+            desc=filename,
+            total=total,
+            unit='B',
+            unit_scale=True,
+            unit_divisor=1024
+        ) as bar:
+            for chunk in response9.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    f.write(chunk)
+                    bar.update(len(chunk))
+
+        print(f"\nDownload completo! Arquivo salvo em: {filepath}")
+        caminho9 = filepath
+        # Descompactar e ler CSV
+        with zipfile.ZipFile(filepath, 'r') as z:
+            # Mostra os nomes dos arquivos
+            print("Arquivos no ZIP:", z.namelist())
+            #Nome real do arquivo CSV dentro do zip
+            dados_cnes_2024 = z.namelist()[0]
+            with z.open(dados_cnes_2024) as f:
+                df_dados_cnes_2024 = pd.read_csv(f, sep=';', encoding='latin-1')
+
+
+    else:
+        print(f"Erro ao baixar arquivo: código {response9.status_code}")
+
+########################################################################################
+#                        Fim EXtração Dados CNES Estabelecimentos                      #
+########################################################################################
+
+
+#%% Ajuste Dados Dataframe DATASUS
 
 
 '''
@@ -640,7 +695,7 @@ df_dados_sim_2024_sp_final = df_dados_sim_2024_filtrado_sp
 df_dados_sim_2024_sp_final.rename(columns={
     'cod_mun_res': 'cod_ibge'}, inplace = True)
 
-#%%
+#%% Estatísticas exploratórias DATASUS
 ###########################################################################
 #                  Estatisticas iniciais do dataframe                     #
 ###########################################################################
@@ -695,8 +750,8 @@ dtype: int64
 #                  Término tratamento SIM DATASUS                            #
 ##############################################################################
 
-
-#%%
+ 
+#%% Ajustes Dataframe SEADE
 
 '''
 ##############################################################################
@@ -721,6 +776,7 @@ df_dados_cod_municipio_ibge_sp = df_dados_cod_municipio_ibge[df_dados_cod_munici
 
 '''
     Criar uma função para retirar caracteres especiaos
+    
 '''
 
 def limpar_texto(texto):
@@ -789,7 +845,7 @@ df_dados_seade_sp_ibge_final['pib_per_capita'] = (df_dados_seade_sp_ibge_final['
 
 
 
-#%%
+#%% Ajustes Dataframe PNUD
 
 
 '''
@@ -820,8 +876,148 @@ df_dados_pnud_2010_ibge_sp_final.rename(columns= {'Código Município Completo':
 #                  Término tratamento PNUD                                   #
 ##############################################################################
 
+#%% Ajustes Dataframe GINI
+
+##############################################################################
+#                  Início tratamento GINI                                    #
+##############################################################################
+
+# Troca o nome da couna  cod municipio
+df_dados_gini_2010.rename(columns= {'cod_municipio ibge':'cod_ibge', 'Gini_2010':'gini'}, inplace = True)
+
+# Ajusta o tipo de dado da coluna 
+df_dados_gini_2010['cod_ibge'] = df_dados_gini_2010['cod_ibge'].astype(str)
+
+df_dados_gini_2010['gini'] = df_dados_gini_2010['gini'].replace({",": "."},regex=True)
+df_dados_gini_2010['gini'] = df_dados_gini_2010['gini'].astype('float64')
+
+##############################################################################
+#                  Termino tratamento GINI                                   #
+##############################################################################
+#%% Ajuste Dataframe Transferencia Recursos
+
+##############################################################################
+#                  Início tratamento Transferência Recursos                  #
+##############################################################################
+
+
+# Converte para loewr o nome do municipio e colocar uma nova coluna
+df_dados_transferencia_recursos_2024['nome_limpo_municipio'] = df_dados_transferencia_recursos_2024['Município'].apply(limpar_texto)
+
+
+# Cruza os dados com o dataframe ibge para pegar o código do municipio
+df_dados_transferencia_recursos_ibge_2024_sp = pd.merge(df_dados_cod_municipio_ibge_sp, df_dados_transferencia_recursos_2024, on="nome_limpo_municipio")
+
+df_dados_transferencia_recursos_2024_sp_final = df_dados_transferencia_recursos_ibge_2024_sp[['Código Município Completo', 'Valor Transferido']]
+
+df_dados_transferencia_recursos_2024_sp_final.rename(columns= {'Código Município Completo':'cod_ibge','Valor Transferido':'valor_transferido' }, inplace=True)
+
+df_dados_transferencia_recursos_2024_sp_final['cod_ibge'].astype(str)
+
+df_dados_transferencia_recursos_2024_sp_final['valor_transferido']=df_dados_transferencia_recursos_2024_sp_final['valor_transferido'].replace({",": "."},regex=True)
+
+df_dados_transferencia_recursos_2024_sp_final['valor_transferido']=df_dados_transferencia_recursos_2024_sp_final['valor_transferido'].astype('float64')
+
+# Padronizar os valores para evitar desequilibrios
+df_dados_transferencia_recursos_2024_sp_final['valor_transferido']=(df_dados_transferencia_recursos_2024_sp_final['valor_transferido'] - df_dados_transferencia_recursos_2024_sp_final['valor_transferido'].mean())/ df_dados_transferencia_recursos_2024_sp_final['valor_transferido'].std()
+
+
+##############################################################################
+#                  Termino tratamento Transferência Recursos                 #
+##############################################################################
 
 #%%
+###########################################################################
+#                 Inicio Tratamento CNES                                  #
+###########################################################################
+
+# Pega o nome das colunas
+df_dados_cnes_2024.columns
+
+'''
+Colunas
+
+Index(['CO_CNES', 'CO_UNIDADE', 'CO_UF', 'CO_IBGE', 'NU_CNPJ_MANTENEDORA','NO_RAZAO_SOCIAL', 'NO_FANTASIA', 'CO_NATUREZA_ORGANIZACAO',
+       'DS_NATUREZA_ORGANIZACAO', 'TP_GESTAO', 'CO_NIVEL_HIERARQUIA','DS_NIVEL_HIERARQUIA', 'CO_ESFERA_ADMINISTRATIVA',
+       'DS_ESFERA_ADMINISTRATIVA', 'CO_ATIVIDADE', 'TP_UNIDADE', 'CO_CEP','NO_LOGRADOURO', 'NU_ENDERECO', 'NO_BAIRRO', 'NU_TELEFONE',
+       'NU_LATITUDE', 'NU_LONGITUDE', 'CO_TURNO_ATENDIMENTO','DS_TURNO_ATENDIMENTO', 'NU_CNPJ', 'NO_EMAIL', 'CO_NATUREZA_JUR',
+       'ST_CENTRO_CIRURGICO', 'ST_CENTRO_OBSTETRICO', 'ST_CENTRO_NEONATAL','ST_ATEND_HOSPITALAR', 'ST_SERVICO_APOIO', 'ST_ATEND_AMBULATORIAL',
+       'CO_MOTIVO_DESAB', 'CO_AMBULATORIAL_SUS'],dtype='object')
+
+Códigos de Tipo de Gestão no CNES
+C:Gestão por Organização Social (OS)
+D:Gestão por Organização da Sociedade Civil de Interesse Público (OSCIP)
+E:Gestão por Organização da Sociedade Civil (OSC)
+M:Gestão mista (público-privada)
+
+Códigos de Tipo de Unidade no CNES
+Abaixo estão alguns dos principais códigos de tipo de unidade utilizados no CNES:
+
+Código	Tipo de Unidade
+001:Unidade Básica de Saúde
+002:Central de Gestão em Saúde
+003:Central de Regulação
+004:Central de Abastecimento
+005:Central de Transplante
+006:Hospital
+007:Centro de Assistência Obstétrica e Neonatal Normal
+008:Pronto Atendimento
+009:Farmácia
+010:Unidade de Atenção Hematológica e/ou Hemoterápica
+011:Núcleo de Telessaúde
+012:Unidade de Atenção Domiciliar
+013:Pólo de Prevenção de Doenças e Agravos e Promoção da Saúde
+014:Casas de Apoio à Saúde
+015:Unidade de Reabilitação
+016:Ambulatório
+017:Unidade de Atenção Psicossocial
+018:Unidade de Apoio Diagnóstico
+019:Unidade de Terapias Especiais
+020:Laboratório de Prótese Dentária
+021:Unidade de Vigilância de Zoonoses
+022:Laboratório de Saúde Pública
+023:Centro de Referência em Saúde do Trabalhador
+024:Serviço de Verificação de Óbito
+025:Centro de Imunização
+
+
+CODIGO NATUREZA ORGANIZAÇÃO
+01:Administração Direta da Saúde (MS, SES, SMS)
+02:Administração Direta de outros órgãos (MEX, MEx, Marinha, etc.)
+03:Administração Indireta - Autarquias
+04:	Administração Indireta - Fundação Pública
+05:Administração Indireta - Empresa Pública
+06:Administração Indireta - Organização Social Pública
+07:Empresa Privada
+08:Fundação Privada
+09:Cooperativa
+10:Serviço Social Autônomo
+11:Entidade Beneficente Sem Fins Lucrativos
+12:Economia Mista
+13:Sindicato
+00:Natureza inexistente
+99:Natureza não informada
+
+Códigos de Esfera Administrativa no CNES
+01:Federal
+02:Estadual
+03:Municipal
+04:Privada
+99:Esfera não informada
+
+
+'''
+
+df_dados_cnes_2024_filtrado =df_dados_cnes_2024[['CO_CNES', 'CO_UNIDADE','NO_FANTASIA','CO_ATIVIDADE', 'TP_UNIDADE', 'TP_GESTAO', 'CO_ESFERA_ADMINISTRATIVA','NU_LATITUDE', 'NU_LONGITUDE']]
+
+
+
+###########################################################################
+#                 Fim Tratamento CNES                                     #
+###########################################################################
+
+
+#%% Merge Dados SIM, SEADE e PNUD
 
 
 '''
@@ -866,8 +1062,38 @@ cod_ibge municipio
 df_dados_seade_pnud_ibge = pd.merge(df_dados_seade_sp_ibge_final, df_dados_pnud_2010_ibge_sp_final, on='cod_ibge', how='left')
 df_dados_sim_seade_pnud_ibge = pd.merge(df_dados_sim_2024_sp_final, df_dados_seade_pnud_ibge, on= 'cod_ibge', how='left')
 
+#%% Merge Dados SIM, SEADE, PNUD e GINI 
+
+'''
+##############################################################################
+#                  Merge Dataframes df_dados_sim_seade_pnud_ibge + GINI      #
+##############################################################################
+'''
+# Merge com os dados de GINI
+df_dados_sim_seade_pnud_ibge_gini = pd.merge(df_dados_sim_seade_pnud_ibge, df_dados_gini_2010 , on= 'cod_ibge', how='left')
+
+#%% Merge Dados SIM, SEADE, PNUD, GINI e Transferências
+
+'''
+#########################################################################################
+#                  Merge Dataframes df_dados_sim_seade_pnud_ibge + GINI + Tranferencias #
+#########################################################################################
+'''
+
+df_dados_sim_seade_pnud_ibge_gini_transferencia = pd.merge(df_dados_sim_seade_pnud_ibge_gini, df_dados_transferencia_recursos_2024_sp_final, on= 'cod_ibge', how='left')
+
+#%% Remoção de colunas do Dataframe Principal
+
+# Limpeza campos dataframe
+df_dados_sim_seade_pnud_ibge_gini_transferencia_final = df_dados_sim_seade_pnud_ibge_gini_transferencia[['sexo', 'raca_cor','causa_basica','tipo_idade','idade_corrigida','cod_ibge', 'municipio','pib', 'pib_per_capita','idhm_2010', 'idhm_renda_2010','gini', 'valor_transferido']]
+
+#%% Filtar Registros por infarto (I21)
+
+# Dados de individuos que causa do óbito foi infarto(I219)
+df_dados_infarto = df_dados_sim_seade_pnud_ibge_gini_transferencia_final[df_dados_sim_seade_pnud_ibge_gini_transferencia_final['causa_basica'] =='I219']
+
 #%%
-
-
+# Sumarizar Registros
+df_dados_infarto_conta = df_dados_infarto.groupby(['municipio'])['causa_basica'].count()
 
 
