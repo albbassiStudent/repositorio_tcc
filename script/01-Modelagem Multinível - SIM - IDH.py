@@ -7,7 +7,7 @@
 # SCRIPT TCC - ALEX DE LIMA BASSI
 
 # Titulo TCC: Fatores Individuais e Contextuais Associados à Mortalidade por 
-    Doenças Crônicas em Adultos no Brasil: Uma Abordagem com Regressão 
+    Doenças Crônicas em Adultos no Estado de São Paulo: Uma Abordagem com Regressão 
     Logística Multinível 
 
 """
@@ -38,93 +38,42 @@
 #                   Pacotes Utilizadas                                  #
 #########################################################################
 '''
-
 # Manipulação de dados em formato de dataframe
 import pandas as pd
-
 # Operações matemáticas
 import numpy as np 
-
 # Visualização gráfica
 import seaborn as sns 
-
 # Visualização gráfica
 import matplotlib.pyplot as plt 
-
 # Estimação de modelos
 import statsmodels.api as sm 
 #from pymer4.models import lmer # estimação de modelos HLM3 neste código
-
 # Estatística chi2
 from scipy import stats 
-
 # Comparação entre modelos
 from statsmodels.iolib.summary2 import summary_col 
-
 # Inserção de KDEs em gráficos
 from scipy.stats import gaussian_kde 
-
 # Plotagem de gráficos separados
 from matplotlib.gridspec import GridSpec 
-
 # Adiciona um indicador de progresso do código
 from tqdm import tqdm 
-
 # Cria diretórios temporários 
 import tempfile
-
 # Permite manipular o sistema operacional
 import os
-
 # Permite fazer requisições HTTP a partir do python
 import requests
-
 # Detectar codificação
 import chardet
-
 # Tirar caracteres especiais
 import unicodedata
-
 # Utilizar regular expression com as colunas do dataaframe
 import re
-
 # Para leitura de arquivos ZIP
 import zipfile
 
-#%% Resumo das colunas para os niveis
-'''
-##############################################################################
-##############################################################################
-#                ESTIMAÇÃO DE MODELOS HIERÁRQUICOS LINEARES                  #
-#                    DE DOIS NÍVEIS COM DADOS AGRUPADOS                      #
-##############################################################################
-##############################################################################
-
-##############################################################################
-#        DESCRIÇÃO E EXPLORAÇÃO DO DATASET 'SIM_INDICADORES_MUNICIPAIS'      #
-##############################################################################
-
-##### Nível 1 – **Indivíduo (registro de óbito)**
-
- Idade
- Sexo
- Escolaridade
- Raça/cor
- Código Município Residência
- CID-10 (grupo de causa)
-
-##### Nível 2 – **Município**
- Renda per capita
- IDH
- IDHM
- IDHM Renda 2010
-.Pib
-.Pib Per capita
-.Gini
-.Transferencias Programas de saúde Governo Federal
-.Número de Leitos
-
-'''
 #%% Impressão bibliotecas utilizados e suas versões Python e R
 
 '''
@@ -252,11 +201,9 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #################################################################   
 
 #%% Coleta Dados SEADE PIB São paulo
-
 #################################################################
 #               INICIO EXTRAÇÃO DADOS SEADE                     #
 #################################################################
-
 
 #Criação do diretório temporario para guarda dos arquivos até a carga do Dataframe
 with tempfile.TemporaryDirectory() as temp_dir:
@@ -475,7 +422,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
     if response6.status_code == 200:
         # Tamanho total do arquivo em bytes
         total = int(response.headers.get('content-length', 0))
-        chunk_size = 1  # 1024 KB por iteração
+        chunk_size = 10  # 1 KB por iteração
 
         # Cria uma barra de progresso
         with open(filepath, 'wb') as f, tqdm(
@@ -483,7 +430,7 @@ with tempfile.TemporaryDirectory() as temp_dir:
             total=total,
             unit='B',
             unit_scale=True,
-            unit_divisor=1
+            unit_divisor=5
         ) as bar:
             for chunk in response6.iter_content(chunk_size=chunk_size):
                 if chunk:
@@ -647,20 +594,27 @@ with tempfile.TemporaryDirectory() as temp_dir:
 #                     Ajustes Dataframe SIM DATASUS                        #
 ############################################################################
 '''
-
-
-df_dados_sim_2024_filtrado = df_dados_sim_2024[['IDADE', 'SEXO', 'RACACOR', 'CODMUNRES', 'CAUSABAS']].astype({
+# Filtragem incial das colunas de interesse do nivel hospital
+df_dados_sim_2024_inicial = df_dados_sim_2024[['IDADE', 'SEXO', 'RACACOR', 'CODMUNRES', 'CAUSABAS', 'CODESTAB','LOCOCOR']].astype({
     'IDADE': 'int',
     'SEXO': 'category',
     'RACACOR': 'category',
     'CODMUNRES':'str',
-    'CAUSABAS':'category'})
+    'CAUSABAS':'category',
+    'CODESTAB':'category',
+    'LOCOCOR':'category'})
 
+#Coleta apenas os óbitos ocorridos em unidades de saúde 
+#1 - Hospitais 2-Outras unidades de saúde (Sistema de Informações de Mortalidade)
+df_dados_sim_2024_filtrado = df_dados_sim_2024_inicial[df_dados_sim_2024_inicial['LOCOCOR'].isin([1, 2])]
 
+#%%
+# Estou restringindo a análise a apenas as ocorrências em hospitais
+df_dados_sim_2024_inicial[df_dados_sim_2024_inicial['LOCOCOR'].isin([1])].count()
+#%%
 
 # pega o primeiro algaritimo da idade para classificar o tipo de contagem (hora, mes, ano, +100 anos)
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['IDADE'].fillna('').astype(str).str[0]
-
 # pega os dois ultimos digitos da idade para dar a idade no momento da morte (hora, mes, ano, +100 anos)
 df_dados_sim_2024_filtrado['idade_corrigida']= df_dados_sim_2024_filtrado['IDADE'].fillna('').astype(str).str[1:4]
 # Se a idade não estiver preenchida coloca N/A
@@ -673,6 +627,7 @@ df_dados_sim_2024_filtrado.rename(columns={
     'RACACOR': 'raca_cor',
     'CODMUNRES':'cod_mun_res',
     'CAUSABAS':'causa_basica'
+    'CODESTAB':'cnes'
     }, inplace=True)
 
 
@@ -687,6 +642,8 @@ df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['tipo_idade' ] 
 
 # Pega todos os registros com o código de municipio 350000 (que não existe para o ibge) para o código 350001 (Município de São Paulo) 
 df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['cod_mun_res' ] == '350000'), 'cod_mun_res'] = '355030'
+
+df_dados_sim_2024_filtrado_sp
 
 # Ajusta o nome do Dataframe
 df_dados_sim_2024_sp_final = df_dados_sim_2024_filtrado_sp
