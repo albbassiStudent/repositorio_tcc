@@ -601,18 +601,15 @@ df_dados_sim_2024_inicial = df_dados_sim_2024[['IDADE', 'SEXO', 'RACACOR', 'CODM
     'RACACOR': 'category',
     'CODMUNRES':'str',
     'CAUSABAS':'category',
-    'CODESTAB':'category',
+    'CODESTAB':'str',
     'LOCOCOR':'category'})
 
 #Coleta apenas os óbitos ocorridos em unidades de saúde 
 #1 - Hospitais 2-Outras unidades de saúde (Sistema de Informações de Mortalidade)
-df_dados_sim_2024_filtrado = df_dados_sim_2024_inicial[df_dados_sim_2024_inicial['LOCOCOR'].isin([1, 2])]
-
-#%%
-# Estou restringindo a análise a apenas as ocorrências em hospitais
-df_dados_sim_2024_inicial[df_dados_sim_2024_inicial['LOCOCOR'].isin([1])].count()
-#%%
-
+# Considerando apenas Hospitais
+df_dados_sim_2024_local_ocorrencia = df_dados_sim_2024_inicial[df_dados_sim_2024_inicial['LOCOCOR'].isin([1])]
+# considerando apenas adultos (idade >= 18 anos)
+df_dados_sim_2024_filtrado = df_dados_sim_2024_local_ocorrencia[df_dados_sim_2024_local_ocorrencia['IDADE']> 417]
 # pega o primeiro algaritimo da idade para classificar o tipo de contagem (hora, mes, ano, +100 anos)
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['IDADE'].fillna('').astype(str).str[0]
 # pega os dois ultimos digitos da idade para dar a idade no momento da morte (hora, mes, ano, +100 anos)
@@ -620,16 +617,17 @@ df_dados_sim_2024_filtrado['idade_corrigida']= df_dados_sim_2024_filtrado['IDADE
 # Se a idade não estiver preenchida coloca N/A
 df_dados_sim_2024_filtrado['idade_corrigida'] = pd.to_numeric(df_dados_sim_2024_filtrado['idade_corrigida'], errors='coerce').astype('Int64')
 # Retira a coluna idade que vem codificada
-df_dados_sim_2024_filtrado.drop(['IDADE'], axis=1, inplace=True)
+df_dados_sim_2024_filtrado.drop(['IDADE', 'LOCOCOR'], axis=1, inplace=True)
+
 # Renomeia as colunas para lower case
 df_dados_sim_2024_filtrado.rename(columns={
     'SEXO': 'sexo',
     'RACACOR': 'raca_cor',
     'CODMUNRES':'cod_mun_res',
-    'CAUSABAS':'causa_basica'
-    'CODESTAB':'cnes'
+    'CAUSABAS':'causa_basica',
+    'CODESTAB':'cnes',
+    'LOCOCOR':'local_ocorr'
     }, inplace=True)
-
 
 # Converte o tipo de idade para categoria 
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['tipo_idade'].astype('category')
@@ -643,71 +641,63 @@ df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['tipo_idade' ] 
 # Pega todos os registros com o código de municipio 350000 (que não existe para o ibge) para o código 350001 (Município de São Paulo) 
 df_dados_sim_2024_filtrado_sp.loc[(df_dados_sim_2024_filtrado_sp['cod_mun_res' ] == '350000'), 'cod_mun_res'] = '355030'
 
-df_dados_sim_2024_filtrado_sp
+df_dados_sim_2024_filtrado_sp.drop(['tipo_idade'], axis=1, inplace=True)
 
 # Ajusta o nome do Dataframe
 df_dados_sim_2024_sp_final = df_dados_sim_2024_filtrado_sp
 
 # Troca o nome do código de municipio par cod_ibge conforme a chave os outros dataframes
-df_dados_sim_2024_sp_final.rename(columns={
-    'cod_mun_res': 'cod_ibge'}, inplace = True)
+df_dados_sim_2024_sp_final.rename(columns={'cod_mun_res': 'cod_ibge', 'idade_corrigida':'idade'}, inplace = True)
 
-#%% Estatísticas exploratórias DATASUS
-###########################################################################
-#                  Estatisticas iniciais do dataframe                     #
-###########################################################################
+df_dados_sim_2024_sp_final = df_dados_sim_2024_sp_final.reset_index(drop=True)
 
-# Numéricas: média, std, min, max, quartis
-#df_dados_sim_2024_filtrado_sp.describe()
+# 10 primeiras linhas do dataframe dataus
+df_dados_sim_2024_sp_final.head()
 
-'''
-       idade_corrigida
-count         333035.0
-mean         68.881187
-std          19.410306
-min                0.0
-25%               59.0
-50%               72.0
-75%               83.0
-max              122.0
-'''       
+#%% Plotagem dataframe DATASUS
 
-# Tipo de dados, nulos, memória
-#df_dados_sim_2024_filtrado_sp.info()             
-'''
-<class 'pandas.core.frame.DataFrame'>
-Index: 333132 entries, 272 to 1425387
-Data columns (total 6 columns):
- #   Column           Non-Null Count   Dtype   
----  ------           --------------   -----   
- 0   sexo             333132 non-null  category
- 1   raca_cor         330960 non-null  category
- 2   cod_mun_res      333132 non-null  category
- 3   causa_basica     333132 non-null  category
- 4   tipo_idade       333132 non-null  category
- 5   idade_corrigida  333035 non-null  Int64   
-dtypes: Int64(1), category(5)
-memory usage: 8.0 MB
+#plotagem por sexo
+total_sexo = df_dados_sim_2024_sp_final['sexo'].value_counts()
 
-'''
-# Total de valores ausentes por coluna
-df_dados_sim_2024_filtrado_sp.isnull().sum()
- 
-'''
-sexo                  0
-raca_cor           2172
-cod_mun_res           0
-causa_basica          0
-tipo_idade            0
-idade_corrigida      97
-dtype: int64
-'''
+# Plotar o histograma (gráfico de barras)
+total_sexo.plot(kind='bar', color='skyblue')
 
-##############################################################################
-#                  Término tratamento SIM DATASUS                            #
-##############################################################################
+# Personalizar o gráfico
+plt.title('Mortes em Hospitais por sexo em São Paulo - 2024')
+plt.xlabel('Sexo')
+plt.ylabel('Total')
+plt.xticks(rotation=45)
+plt.show()
+#%% 
+#%% Plotagem dataframe DATASUS
 
- 
+#plotagem por sexo
+total_cid = df_dados_sim_2024_sp_final['causa_basica'].value_counts()
+
+top30 = total_cid.head(29).sum()
+#%%
+df_outras = total_cid.iloc[29:].sum()
+
+print(df_outras)
+#%%
+# Adicionar a nova linha ao final do DataFrame usando `loc`
+top30.loc[len(top30)] = nova_linha
+
+
+# Cores a serem utilizadas. O padrão viridis permite que as cores sejam diferenciadas por pessoas daltônicas
+colormap = plt.cm.plasma 
+
+# Plotar o histograma (gráfico de barras)
+total_cid.plot(kind='bar', color= colormap(range(30)))
+
+# Personalizar o gráfico
+plt.title('Mortes em Hospitais por CID10 em São Paulo - 2024')
+plt.xlabel('CID 10')
+plt.ylabel('Total')
+plt.xticks(rotation=45)
+plt.show()
+
+
 #%% Ajustes Dataframe SEADE
 
 '''
