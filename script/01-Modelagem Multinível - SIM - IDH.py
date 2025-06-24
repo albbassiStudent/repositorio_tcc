@@ -654,48 +654,12 @@ df_dados_sim_2024_sp_final = df_dados_sim_2024_sp_final.reset_index(drop=True)
 # 10 primeiras linhas do dataframe dataus
 df_dados_sim_2024_sp_final.head()
 
-#%% Plotagem dataframe DATASUS
 
-#plotagem por sexo
-total_sexo = df_dados_sim_2024_sp_final['sexo'].value_counts()
+#%% Apenas registros do Capítulo X -Doenças do aparelho respiratório	(J00-J99) CID10
 
-# Plotar o histograma (gráfico de barras)
-total_sexo.plot(kind='bar', color='skyblue')
-
-# Personalizar o gráfico
-plt.title('Mortes em Hospitais por sexo em São Paulo - 2024')
-plt.xlabel('Sexo')
-plt.ylabel('Total')
-plt.xticks(rotation=45)
-plt.show()
-#%% 
-#%% Plotagem dataframe DATASUS
-
-#plotagem por sexo
-total_cid = df_dados_sim_2024_sp_final['causa_basica'].value_counts()
-
-top30 = total_cid.head(29).sum()
-#%%
-df_outras = total_cid.iloc[29:].sum()
-
-print(df_outras)
-#%%
-# Adicionar a nova linha ao final do DataFrame usando `loc`
-top30.loc[len(top30)] = nova_linha
+df_dados_sim_2024_filtrado_sp_x = df_dados_sim_2024_sp_final[df_dados_sim_2024_sp_final['causa_basica'].astype(str).str.startswith('J', na=False)]
 
 
-# Cores a serem utilizadas. O padrão viridis permite que as cores sejam diferenciadas por pessoas daltônicas
-colormap = plt.cm.plasma 
-
-# Plotar o histograma (gráfico de barras)
-total_cid.plot(kind='bar', color= colormap(range(30)))
-
-# Personalizar o gráfico
-plt.title('Mortes em Hospitais por CID10 em São Paulo - 2024')
-plt.xlabel('CID 10')
-plt.ylabel('Total')
-plt.xticks(rotation=45)
-plt.show()
 
 
 #%% Ajustes Dataframe SEADE
