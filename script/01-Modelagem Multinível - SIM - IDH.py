@@ -588,7 +588,6 @@ with tempfile.TemporaryDirectory() as temp_dir:
 
 #%% Ajuste Dados Dataframe DATASUS
 
-
 '''
 ############################################################################
 #                     Ajustes Dataframe SIM DATASUS                        #
@@ -658,7 +657,6 @@ df_dados_sim_2024_sp_final.head()
 #%% Apenas registros do Capítulo X -Doenças do aparelho respiratório	(J00-J99) CID10
 
 df_dados_sim_2024_filtrado_sp_x = df_dados_sim_2024_sp_final[df_dados_sim_2024_sp_final['causa_basica'].astype(str).str.startswith('J', na=False)]
-
 
 
 
