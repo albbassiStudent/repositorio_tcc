@@ -31,6 +31,11 @@
 !pip install -q watermark
 !pip install chardet
 !pip install xlrd
+!pip install tqdm
+!pip install requests
+!pip install zipfile36
+!pip install unicodedata2
+!pip install regex  
 
 #%% Carga das Bibliotecas
 '''
@@ -630,6 +635,8 @@ df_dados_sim_2024_filtrado.rename(columns={
 
 # Converte o tipo de idade para categoria 
 df_dados_sim_2024_filtrado['tipo_idade'] = df_dados_sim_2024_filtrado['tipo_idade'].astype('category')
+df_dados_sim_2024_filtrado['cnes'] = df_dados_sim_2024_filtrado['cnes'].astype('category')
+
 
 # Filtra apenas as ocorrência de óbito registradas em municípios de São Paulo 
 df_dados_sim_2024_filtrado_sp = df_dados_sim_2024_filtrado[df_dados_sim_2024_filtrado['cod_mun_res'].astype(str).str.startswith('35', na=False)]
@@ -657,6 +664,7 @@ df_dados_sim_2024_sp_final.head()
 #%% Apenas registros do Capítulo X -Doenças do aparelho respiratório	(J00-J99) CID10
 
 df_dados_sim_2024_filtrado_sp_x = df_dados_sim_2024_sp_final[df_dados_sim_2024_sp_final['causa_basica'].astype(str).str.startswith('J', na=False)]
+
 
 
 
